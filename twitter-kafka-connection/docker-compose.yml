@@ -1,0 +1,54 @@
+version: "3"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - my-network
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - my-network
+  twitter-mock:
+    image: twitter-mock:1.1
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./resources:/app/src/main/resources
+    networks:
+      - my-network
+  twitter-kafka-connection:
+    image: twitter-kafka-connection:1.0.1
+    depends_on:
+      - zookeeper
+      - kafka
+      - twitter-mock
+    ports:
+      - "8084:8084"
+    networks:
+      - my-network
+    environment:
+      - KAFKA_BOOTSTRAP_SERVER=kafka:29092
+      - TWITTER_CREDENTIALS=/resources/twitter-credentials.properties
+      - TWITTER_MOCK_SERVER=http://twitter-mock:8085
+    volumes:
+      - ./resources:/resources
+networks:
+  my-network:
+    driver: bridge
