@@ -1,0 +1,13 @@
+version: '3'
+services:
+  twitter-mock:
+    image: twitter-mock:1.1
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./scripts:/run
+      - ./target:/app
+      - ./src/main/resources:/app/src/main/resources
+networks:
+  my-network:
+    driver: bridge
