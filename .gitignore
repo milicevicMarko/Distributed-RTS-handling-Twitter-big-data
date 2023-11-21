@@ -1,0 +1,17 @@
+*.class
+*.log
+/.idea/
+/kafka/resources/
+/kafka/.bsp/
+/project/target/config-classes/$06f1f90dab0bcdf3c19e.cache
+/target/
+/project/
+/.bsp/sbt.json
+
+/Diary/docs/
+
+/.vscode
+*.csv
+
+twitter-credentials.properties
+Master Thesis  Diary.md
