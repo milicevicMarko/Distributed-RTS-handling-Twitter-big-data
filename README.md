@@ -5,3 +5,5 @@
 ## Todo
 
 - [ ] Extract twitter_api_mock into an external dependency
+
+- [ ] Rename `frontend-service` into `gateway`
